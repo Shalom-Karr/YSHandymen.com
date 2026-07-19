@@ -61,14 +61,25 @@
     el.textContent = String(new Date().getFullYear());
   });
 
-  /* ---------- contact form ----------
-     No backend is wired up. The form hands off to the visitor's mail client
-     with the enquiry pre-filled, so it works on plain static hosting.
-     Swap `handoffToEmail` for a real endpoint (Formspree, Netlify, Worker)
-     when one is available — see README. */
+  /* ---------- contact form ----------------------------------------------------
+     Submissions are delivered by Web3Forms (https://web3forms.com) — free tier,
+     250 submissions/month, no account or server needed. Comfortably covers the
+     expected ~5/day.
+
+     TO ACTIVATE (one minute, free):
+       1. Go to https://web3forms.com
+       2. Enter yshandymen@gmail.com — an access key is emailed straight back
+       3. Paste that key into WEB3FORMS_KEY below and redeploy
+
+     Until a key is set, the form falls back to a pre-filled mailto: handoff so
+     the site still works. Nothing here exposes a secret — the access key is a
+     public submission token, safe to commit. */
+  var WEB3FORMS_KEY = '';   // <-- paste the access key here
+
   var form = document.querySelector('#quote-form');
   if (form) {
     var status = form.querySelector('.form-status');
+    var submit = form.querySelector('button[type="submit"]');
 
     var show = function (msg, kind) {
       if (!status) return;
@@ -76,37 +87,82 @@
       status.className = 'form-status is-shown ' + kind;
     };
 
+    var collect = function () {
+      var d = new FormData(form);
+      return {
+        name:  (d.get('name')    || '').toString().trim(),
+        phone: (d.get('phone')   || '').toString().trim(),
+        email: (d.get('email')   || '').toString().trim(),
+        job:   (d.get('job')     || '').toString().trim(),
+        msg:   (d.get('message') || '').toString().trim(),
+        trap:  (d.get('botcheck')|| '').toString()
+      };
+    };
+
+    var mailtoFallback = function (v) {
+      var body = [
+        'Name:    ' + v.name,
+        'Phone:   ' + v.phone,
+        'Email:   ' + (v.email || '—'),
+        'Service: ' + (v.job || 'General handyman work'),
+        '', v.msg
+      ].join('\n');
+      window.location.href = 'mailto:yshandymen@gmail.com'
+        + '?subject=' + encodeURIComponent('Website enquiry — ' + (v.job || 'Handyman work') + ' — ' + v.name)
+        + '&body='    + encodeURIComponent(body);
+      show('Opening your email app with the details filled in. If nothing happens, '
+         + 'call 848-261-9922 or email yshandymen@gmail.com directly.', 'ok');
+    };
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      var v = collect();
 
-      var data = new FormData(form);
-      var name  = (data.get('name')  || '').toString().trim();
-      var phone = (data.get('phone') || '').toString().trim();
-      var email = (data.get('email') || '').toString().trim();
-      var job   = (data.get('job')   || '').toString().trim();
-      var msg   = (data.get('message') || '').toString().trim();
-
-      if (!name || !phone || !msg) {
+      if (v.trap) return;                         // honeypot tripped — silently drop
+      if (!v.name || !v.phone || !v.msg) {
         show('Please fill in your name, phone number and a short description of the job.', 'err');
         return;
       }
 
-      var lines = [
-        'Name:    ' + name,
-        'Phone:   ' + phone,
-        'Email:   ' + (email || '—'),
-        'Service: ' + (job || 'General handyman work'),
-        '',
-        msg
-      ];
+      if (!WEB3FORMS_KEY) { mailtoFallback(v); form.reset(); return; }
 
-      var href = 'mailto:yshandymen@gmail.com'
-        + '?subject=' + encodeURIComponent('Website enquiry — ' + (job || 'Handyman work') + ' — ' + name)
-        + '&body='    + encodeURIComponent(lines.join('\n'));
+      submit.disabled = true;
+      var label = submit.textContent;
+      submit.textContent = 'Sending…';
 
-      window.location.href = href;
-      show('Opening your email app with the details filled in. If nothing happens, call 848-261-9922 or email yshandymen@gmail.com directly.', 'ok');
-      form.reset();
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: 'Website enquiry — ' + (v.job || 'Handyman work') + ' — ' + v.name,
+          from_name: 'Y.S. Handymen website',
+          name: v.name,
+          phone: v.phone,
+          email: v.email || 'not supplied',
+          service: v.job || 'General handyman work',
+          message: v.msg
+        })
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        if (r.success) {
+          show('Thanks — your request has been sent. We\'ll get back to you shortly. '
+             + 'For anything urgent, call 848-261-9922.', 'ok');
+          form.reset();
+        } else {
+          show('Something went wrong sending that. Please call 848-261-9922 or '
+             + 'email yshandymen@gmail.com.', 'err');
+        }
+      })
+      .catch(function () {
+        show('Couldn\'t reach the server. Please call 848-261-9922 or email '
+           + 'yshandymen@gmail.com.', 'err');
+      })
+      .finally(function () {
+        submit.disabled = false;
+        submit.textContent = label;
+      });
     });
   }
 })();
