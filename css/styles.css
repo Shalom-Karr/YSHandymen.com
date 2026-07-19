@@ -239,6 +239,13 @@ p  { text-wrap: pretty; }
   background: #fff; color: var(--navy); border-color: #fff;
 }
 
+/* WhatsApp click-to-message. WhatsApp's bright #25D366 gives white text only
+   1.8:1, and their darker #128C7E still fails once the call-bar label shrinks on
+   narrow phones. This teal clears 5.2:1 against white at ANY size, so the button
+   stays legible regardless of how it is scaled — still reads as WhatsApp. */
+.btn--wa { --btn-bg: #0F7A6D; --btn-fg: #fff; }
+.btn--wa:hover { box-shadow: 0 10px 24px -8px rgba(15, 122, 109, .65); }
+
 .btn-row { display: flex; flex-wrap: wrap; gap: .85rem; }
 .btn-row.center { justify-content: center; }
 
@@ -786,7 +793,19 @@ p  { text-wrap: pretty; }
 }
 .callbar a + a { border-left: 1px solid rgba(255, 255, 255, .16); }
 .callbar a.primary { background: var(--orange); }
+.callbar a.wa { background: #0F7A6D; }
 .callbar svg { width: 18px; height: 18px; }
+/* Three buttons don't fit at 19.2px on narrow phones. Only the orange one is
+   contrast-bound by its size — the navy/green ones are ~16:1 and 5:1 on white,
+   so they can shrink safely. */
+@media (max-width: 440px) {
+  .callbar a { letter-spacing: .04em; padding-inline: .35rem; }
+  .callbar a:not(.primary) { font-size: 1rem; }
+  .callbar a:not(.primary) svg { width: 16px; height: 16px; }
+}
+@media (max-width: 340px) {
+  .callbar a svg { display: none; }
+}
 
 /* --------------------------------------------------------- reveal anim */
 .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s var(--ease), transform .7s var(--ease); }

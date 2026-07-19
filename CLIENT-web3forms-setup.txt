@@ -57,4 +57,14 @@ Will I get spam?
   The form has a hidden anti-spam trap built in that blocks automated bots.
 
 
+ONE MORE THING — WHATSAPP IS ALREADY WORKING
+--------------------------------------------
+The site now has "Message on WhatsApp" buttons throughout, plus a WhatsApp
+button in the bar fixed to the bottom of the screen on phones.
+
+That needs NO setup at all — it just opens a WhatsApp chat to 848-261-9922 with
+a short message already typed in, ready for them to hit send. Nothing to sign up
+for and nothing to configure.
+
+
 Any trouble with it, just send me a message.

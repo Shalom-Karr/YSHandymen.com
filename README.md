@@ -1,11 +1,12 @@
-# Y.S. Handymen — Website
+# Y.S. Handymen LLC — Website
 
-Static marketing site for **Y.S. Handymen**, a handyman service run by Yosef Silberstein,
-servicing Cleveland.
+Static marketing site for **Y.S. Handymen LLC**, a handyman service run by Yosef
+Silberstein, servicing Cleveland.
 
 - **Live:** https://yshandyman.pages.dev
 - **Phone:** 848-261-9922
 - **Email:** yshandymen@gmail.com
+- **WhatsApp:** https://wa.me/18482619922 (click-to-chat, message pre-filled)
 - **Slogan:** Quality work. Reliable service. Peace of mind.
 - **Tagline:** Small jobs. Big difference. We're here to help.
 
@@ -34,6 +35,7 @@ drop the folder on any static host and it works. Deployed on Cloudflare Pages.
     ├── logo-compact-white.png  Knockout header lockup — used in footer
     ├── mark.png / mark-white.png   Hammer-in-fist mark only
     ├── favicon.png (180) / favicon-64.png
+    ├── og-image.jpg            1200x630 social preview card (generated)
     ├── flyer-*.jpg             Web-optimised flyer artwork used in page sections
     └── source/                 Original untouched artwork (masters — keep these)
 ```
@@ -111,6 +113,37 @@ The key is a public submission token — safe to commit.
 Until a key is set the form **still works**: it falls back to a pre-filled `mailto:`
 handoff. The form also carries a hidden honeypot field that silently drops bot
 submissions.
+
+## WhatsApp
+
+Click-to-chat uses `wa.me` — no API, no account, no cost. The link opens WhatsApp
+(app on mobile, WhatsApp Web on desktop) with a message pre-filled:
+
+```
+https://wa.me/18482619922?text=Hi%20Y.S.%20Handymen%2C%20I%27d%20like%20a%20quote%20for%20a%20job.
+```
+
+The number must be in full international format with no `+`, spaces or dashes —
+`18482619922`. If the business number ever changes, update it in all four HTML files
+and in the `sameAs` / `WA` entries of the SEO generator.
+
+Placed in: the homepage hero, every CTA band, the footer contact list, the contact-page
+details, and the sticky mobile bar.
+
+The button uses `#0F7A6D` rather than WhatsApp's own `#25D366` — white text on the
+official green is only 1.8:1 and would be unreadable. This teal clears 5.2:1 at any
+size while still reading as WhatsApp.
+
+## Social previews
+
+`assets/og-image.jpg` is a purpose-built 1200x630 card (navy, blueprint grid, knockout
+logo, headline, phone and slogan triad) rather than the bare logo, which would letterbox
+badly in a link preview. It's referenced by `og:image` and `twitter:image` with explicit
+width/height/alt on all four pages.
+
+It's generated, not hand-drawn — the script lives in the git history for this commit and
+uses Arial Narrow Bold as a local stand-in for Oswald. Regenerate it if the tagline or
+phone number changes.
 
 ## SEO
 
