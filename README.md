@@ -3,7 +3,7 @@
 Static marketing site for **Y.S. Handymen LLC**, a handyman service run by Yosef
 Silberstein, servicing Cleveland.
 
-- **Live:** https://yshandyman.pages.dev
+- **Live:** https://yshandymen.com
 - **Phone:** 848-261-9922
 - **Email:** yshandymen@gmail.com
 - **WhatsApp:** https://wa.me/18482619922 (click-to-chat, message pre-filled)
@@ -97,6 +97,30 @@ python -m http.server 8000
 # → http://127.0.0.1:8000
 ```
 
+## Deployment
+
+`.github/workflows/deploy.yml` deploys every push to `main` to the Cloudflare Pages
+project **`yshandymen`** in the client's Cloudflare account (the account that holds the
+`yshandymen.com` zone). It stages only the site files (HTML, `css/`, `js/`, `assets/`,
+`robots.txt`, `sitemap.xml`) so repo-only files like this README are never published.
+
+The workflow needs two GitHub repo secrets (**Settings → Secrets and variables →
+Actions**), both from the **client's** Cloudflare account:
+
+| Secret | Where to get it |
+|---|---|
+| `CLOUDFLARE_ACCOUNT_ID` | Dashboard → any zone → Overview, right sidebar |
+| `CLOUDFLARE_API_TOKEN` | Dashboard → My Profile → API Tokens → Create Token → custom token with **Account · Cloudflare Pages · Edit** |
+
+One-time steps after the first successful deploy (the workflow auto-creates the Pages
+project):
+
+1. Dashboard → Workers & Pages → `yshandymen` → **Custom domains** → add
+   `yshandymen.com` (and optionally `www.yshandymen.com`). The zone is in the same
+   account, so Cloudflare creates the DNS records automatically.
+2. Delete the old `yshandyman` Pages project in the previous (Shalomkarr) account —
+   it is Git-connected to this repo and will otherwise keep deploying in parallel.
+
 ## Contact form
 
 The quote form posts to [Web3Forms](https://web3forms.com) — free tier, 250 submissions
@@ -167,7 +191,6 @@ Targeted at local searches like "handyman Cleveland" / "handyman near me".
 - Create a **Google Business Profile** — for "handyman in Cleveland" this will drive
   more traffic than the site itself. The site then acts as the landing page.
 - Submit `sitemap.xml` in Google Search Console.
-- Update `BASE` in the SEO block if a custom domain replaces the pages.dev URL.
 
 ## Things the owner should confirm or supply
 
