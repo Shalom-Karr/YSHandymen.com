@@ -869,6 +869,24 @@ p  { text-wrap: pretty; }
   .btn-row .btn, .drawer .btn, form .btn { width: 100%; }
 }
 
+/* ------------------------------------------------- built-by credit
+   The "Built by Shalom Karr" pill shared with SK Music / addressitled.com,
+   recoloured for the navy footer. */
+.footer__credit { display: flex; justify-content: center; padding: 0 0 1.5rem; }
+a.built-by-pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px;
+  border-radius: 999px; white-space: nowrap;
+  background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .16);
+  color: rgba(255, 255, 255, .65); font-size: .82rem; text-decoration: none;
+  transition: background .16s, border-color .16s, color .16s;
+}
+a.built-by-pill:hover { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .3); color: #fff; }
+.built-by-pill .bb-star { width: 14px; height: 14px; color: var(--orange-400); flex: none; }
+.built-by-pill .bb-by { letter-spacing: .4px; }
+.built-by-pill .bb-who { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 600; color: #fff; }
+.built-by-pill .bb-arrow { width: 12px; height: 12px; flex: none; transition: transform .2s; }
+a.built-by-pill:hover .bb-arrow { transform: translateX(3px); }
+
 /* --------------------------------------------------------- reviews */
 .stars { font-size: 1.05rem; letter-spacing: .14em; color: var(--orange); white-space: nowrap; }
 .stars i { font-style: normal; color: var(--line); }
