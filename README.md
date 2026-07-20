@@ -124,15 +124,11 @@ project):
 ## Contact form
 
 The quote form posts to [Web3Forms](https://web3forms.com) — free tier, 250 submissions
-per month, no server and no account to maintain. **It needs a one-minute activation
-step**, described in plain language in `CLIENT-web3forms-setup.txt` (written to be
-forwarded straight to the owner):
-
-1. Enter `yshandymen@gmail.com` at https://web3forms.com
-2. An access key arrives by email
-3. Paste it into `WEB3FORMS_KEY` at the top of the contact-form section in `js/main.js`
-
-The key is a public submission token — safe to commit.
+per month, no server and no account to maintain. The access key is **already set** in
+`WEB3FORMS_KEY` at the top of the contact-form section in `js/main.js`; submissions go
+to `yshandymen@gmail.com`. The key is a public submission token — safe to commit. To
+rotate it, request a new key for the same email at https://web3forms.com and replace
+the value (`CLIENT-web3forms-setup.txt` describes the process in plain language).
 
 Until a key is set the form **still works**: it falls back to a pre-filled `mailto:`
 handoff. The form also carries a hidden honeypot field that silently drops bot

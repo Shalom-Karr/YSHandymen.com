@@ -74,7 +74,7 @@
      Until a key is set, the form falls back to a pre-filled mailto: handoff so
      the site still works. Nothing here exposes a secret — the access key is a
      public submission token, safe to commit. */
-  var WEB3FORMS_KEY = '';   // <-- paste the access key here
+  var WEB3FORMS_KEY = 'dc13e541-51a5-4d23-834d-ba0bb518004c';
 
   var form = document.querySelector('#quote-form');
   if (form) {
