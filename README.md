@@ -122,14 +122,10 @@ Actions**), both from the **client's** Cloudflare account:
 | `CLOUDFLARE_ACCOUNT_ID` | Dashboard → any zone → Overview, right sidebar |
 | `CLOUDFLARE_API_TOKEN` | Dashboard → My Profile → API Tokens → Create Token → custom token with **Account · Cloudflare Pages · Edit** |
 
-One-time steps after the first successful deploy (the workflow auto-creates the Pages
-project):
-
-1. Dashboard → Workers & Pages → `yshandymen` → **Custom domains** → add
-   `yshandymen.com` (and optionally `www.yshandymen.com`). The zone is in the same
-   account, so Cloudflare creates the DNS records automatically.
-2. Delete the old `yshandyman` Pages project in the previous (Shalomkarr) account —
-   it is Git-connected to this repo and will otherwise keep deploying in parallel.
+Custom domains `yshandymen.com` and `www.yshandymen.com` are attached to the
+project, and `ys-handymen.com` 301-redirects to the primary domain. Every deploy
+also pings IndexNow so Bing/Edge recrawls, and the site is submitted in Google
+Search Console with a Google Business Profile in place.
 
 ## Reviews, gallery & owner console (Supabase)
 
@@ -154,9 +150,9 @@ nothing — the email must also be in `admins`. From there the owner approves,
 edits, unpublishes or deletes reviews, and posts/deletes before-and-after
 projects (two photos upload to storage, then a `gallery` row is inserted).
 
-**One-time setup**: run `supabase/schema.sql`, then create the login under
-Authentication → Users → Add user (owner's email + password, Auto Confirm).
-To add another moderator: add the email to `admins` and create a login for it.
+**Adding a moderator**: insert the email into `admins` and create a login for it
+under Authentication → Users → Add user (Auto Confirm). `schema.sql` is
+idempotent — safe to re-run any time to repair tables or policies.
 
 ## Contact form
 
@@ -218,12 +214,6 @@ Targeted at local searches like "handyman Cleveland" / "handyman near me".
   - `FAQPage` on services.html — the seven questions in the markup match the seven
     visible on the page, which Google requires
   - `BreadcrumbList` on all subpages, plus `WebSite` / `AboutPage` / `ContactPage`
-
-### After launch
-
-- Create a **Google Business Profile** — for "handyman in Cleveland" this will drive
-  more traffic than the site itself. The site then acts as the landing page.
-- Submit `sitemap.xml` in Google Search Console.
 
 ## Things the owner should confirm or supply
 
