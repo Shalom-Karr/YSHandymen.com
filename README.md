@@ -227,19 +227,13 @@ Targeted at local searches like "handyman Cleveland" / "handyman near me".
 
 ## Things the owner should confirm or supply
 
-Deliberately left out rather than invented:
-
-- **⚠️ Which Cleveland.** The source branding says only "Servicing Cleveland". The site
-  assumes **Cleveland, Ohio** and lists Ohio suburbs (Cleveland Heights, University
-  Heights, Beachwood, South Euclid, Lyndhurst, Shaker Heights, Mayfield Heights,
-  Richmond Heights, Pepper Pike). Note the phone number is an 848 area code, which is
-  New Jersey — most likely a kept cell number, but **confirm this before promoting the
-  site**, since the city drives all the local SEO and schema.
-- **Customer reviews / testimonials.** No review section was added because there was no
-  real review copy to use. Once there are genuine reviews they're worth adding —
-  social proof converts well for trade services, and `AggregateRating` schema can then
-  be added.
 - **Exact business hours.** Currently "Sunday–Friday, daytime hours" with
   "Closed Shabbos & Yom Tov". Schema declares 08:00–17:00 Sun–Fri. Update in the top
-  bar of all four pages, in `contact.html`, and in the JSON-LD.
+  bar of all pages, in `contact.html`, and in the JSON-LD.
 - **Licensing / insurance.** No claims made. If licensed or insured, say so — it converts.
+- **`AggregateRating` schema.** Once a handful of genuine reviews are approved, the
+  average rating can be added to the JSON-LD for star snippets in search results.
+
+Resolved: the city is confirmed as **Cleveland, Ohio** (the 848 number is a kept
+New Jersey cell), and customer reviews are now collected live on `reviews.html`
+with owner moderation.
