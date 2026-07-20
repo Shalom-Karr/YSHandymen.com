@@ -24,7 +24,7 @@ jobs:
       - name: Stage site files
         run: |
           mkdir dist
-          cp index.html about.html services.html contact.html gallery.html reviews.html admin.html robots.txt sitemap.xml dist/
+          cp index.html about.html services.html contact.html gallery.html reviews.html admin.html robots.txt sitemap.xml 3b3005d197883453bde4318b5ba524b9.txt dist/
           cp -r css js assets dist/
           # Cache-bust local CSS/JS so browsers pick up new styles the moment a
           # deploy lands instead of serving stale cached assets for hours.
@@ -36,3 +36,21 @@ jobs:
 
       - name: Deploy
         run: npx wrangler@4 pages deploy dist --project-name=yshandymen --branch=main --commit-hash=${{ github.sha }} --commit-dirty=true
+
+      - name: Notify IndexNow (Bing/Edge)
+        run: |
+          curl -sS -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            --data '{
+              "host": "yshandymen.com",
+              "key": "3b3005d197883453bde4318b5ba524b9",
+              "keyLocation": "https://yshandymen.com/3b3005d197883453bde4318b5ba524b9.txt",
+              "urlList": [
+                "https://yshandymen.com/",
+                "https://yshandymen.com/services.html",
+                "https://yshandymen.com/about.html",
+                "https://yshandymen.com/contact.html",
+                "https://yshandymen.com/gallery.html",
+                "https://yshandymen.com/reviews.html"
+              ]
+            }' -w "\nIndexNow HTTP %{http_code}\n" || echo "IndexNow submission failed (non-fatal)"

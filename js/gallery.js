@@ -36,4 +36,28 @@
           '</div></article>';
       }).join('');
     });
+
+  // Tap any photo to view it full-size.
+  grid.addEventListener('click', function (e) {
+    var img = e.target.closest('.ba-pair img');
+    if (!img) return;
+    var box = document.createElement('div');
+    box.className = 'lightbox';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-label', img.alt);
+    var full = document.createElement('img');
+    full.src = img.src;
+    full.alt = img.alt;
+    var cap = document.createElement('p');
+    cap.textContent = img.alt;
+    box.append(full, cap);
+    function close() {
+      box.remove();
+      document.removeEventListener('keydown', onKey);
+    }
+    function onKey(ev) { if (ev.key === 'Escape') close(); }
+    box.addEventListener('click', close);
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(box);
+  });
 })();

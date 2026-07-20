@@ -830,6 +830,12 @@ p  { text-wrap: pretty; }
 @media (max-width: 1080px) {
   .footer__grid { grid-template-columns: 1fr 1fr; }
 }
+@media (max-width: 1240px) {
+  /* Six nav links now: shed the duplicate phone lockup and tighten gaps
+     before falling back to the burger, or the header overflows ~980-1200px. */
+  .nav__links { gap: 1.25rem; }
+  .nav__phone { display: none; }
+}
 @media (max-width: 980px) {
   .nav__links, .nav__phone { display: none; }
   .burger { display: block; }
@@ -886,6 +892,14 @@ p  { text-wrap: pretty; }
 }
 .reviews-empty strong { color: var(--navy); }
 
+.rating-summary {
+  display: inline-flex; align-items: center; gap: .55rem;
+  margin-top: 1.4rem; padding: .55rem 1rem;
+  background: #fff; border: 1px solid var(--line); border-radius: 999px;
+  font-size: .95rem; color: var(--slate);
+}
+.rating-summary b { color: var(--navy); font-size: 1.05rem; }
+
 /* Star rating input: sources are in reverse order (5→1) so `~` can light up
    everything to the left of the hovered/checked star. */
 .rate { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: .15rem; }
@@ -914,6 +928,19 @@ p  { text-wrap: pretty; }
   background: var(--navy); color: #fff; padding: .28rem .6rem; border-radius: 3px;
 }
 .ba-tag--after { background: var(--orange); }
+.ba-pair img { cursor: zoom-in; }
+.lightbox {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(2, 14, 27, .93);
+  display: grid; place-content: center; gap: .9rem;
+  padding: clamp(1rem, 4vw, 2.5rem); cursor: zoom-out;
+}
+.lightbox img {
+  max-width: min(94vw, 1100px); max-height: 82vh;
+  border-radius: 6px; border-bottom: 5px solid var(--orange);
+  aspect-ratio: auto; object-fit: contain;
+}
+.lightbox p { color: #fff; text-align: center; font-size: .95rem; }
 .ba-body { padding: 1.35rem 1.5rem 1.5rem; }
 .ba-body h3 { color: var(--navy); font-size: 1.12rem; margin-bottom: .35rem; }
 .ba-body p { color: var(--slate); font-size: .93rem; }

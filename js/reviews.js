@@ -4,6 +4,15 @@
   var form = document.querySelector('#review-form');
   if (!list || !form) return;
 
+  function summarize(rows) {
+    if (!rows.length) return;
+    var avg = rows.reduce(function (a, r) { return a + r.rating; }, 0) / rows.length;
+    var el = document.querySelector('#reviews-summary');
+    el.innerHTML = sbu.stars(Math.round(avg)) + ' <b>' + (Math.round(avg * 10) / 10) +
+      '</b> · ' + rows.length + ' review' + (rows.length > 1 ? 's' : '');
+    el.style.display = '';
+  }
+
   function render(rows) {
     if (!rows.length) {
       list.innerHTML =
@@ -36,6 +45,7 @@
         return;
       }
       render(res.data || []);
+      summarize(res.data || []);
     });
 
   var status = form.querySelector('.form-status');
