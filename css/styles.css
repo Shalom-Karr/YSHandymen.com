@@ -871,8 +871,8 @@ p  { text-wrap: pretty; }
 
 /* ------------------------------------------------- built-by credit
    The "Built by Shalom Karr" pill shared with SK Music / addressitled.com,
-   recoloured for the navy footer. */
-.footer__credit { display: flex; justify-content: center; padding: 0 0 1.5rem; }
+   recoloured for the navy footer. Sits inline as the centre item of the
+   footer bar (slogan · pill · copyright). */
 a.built-by-pill {
   display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px;
   border-radius: 999px; white-space: nowrap;
