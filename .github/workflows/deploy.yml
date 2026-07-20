@@ -24,7 +24,7 @@ jobs:
       - name: Stage site files
         run: |
           mkdir dist
-          cp index.html about.html services.html contact.html robots.txt sitemap.xml dist/
+          cp index.html about.html services.html contact.html gallery.html reviews.html admin.html robots.txt sitemap.xml dist/
           cp -r css js assets dist/
 
       - name: Create Pages project if missing

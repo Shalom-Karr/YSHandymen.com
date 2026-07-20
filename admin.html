@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Owner Console | Y.S. Handymen LLC</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#03203E">
+<link rel="canonical" href="https://yshandymen.com/admin.html">
+<link rel="icon" href="assets/favicon-64.png" sizes="64x64">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="shell nav">
+    <a class="brand" href="index.html" aria-label="Y.S. Handymen — home">
+      <img src="assets/logo-compact.png" alt="Y.S. Handymen — Handyman Services" width="816" height="320">
+    </a>
+    <nav class="nav__links" aria-label="Main">
+      <a class="nav__link" href="index.html">Home</a>
+      <a class="nav__link" href="gallery.html">Gallery</a>
+      <a class="nav__link" href="reviews.html">Reviews</a>
+    </nav>
+    <div class="nav__cta"></div>
+  </div>
+</header>
+
+<main>
+
+<section class="page-head blueprint">
+  <div class="shell page-head__in">
+    <p class="crumbs"><a href="index.html">Home</a> / <span>Owner Console</span></p>
+    <h1>Owner<br>Console</h1>
+    <p class="lead">Approve reviews and post before &amp; after photos.</p>
+  </div>
+</section>
+
+<section class="section blueprint blueprint--light">
+  <div class="shell">
+
+    <!-- ------------------------------ sign in -->
+    <div id="login-view" style="max-width:460px; margin-inline:auto;">
+      <div class="form-card">
+        <p class="eyebrow">Sign In</p>
+        <h2 style="font-size:clamp(1.6rem,3vw,2rem); margin:.9rem 0 1.4rem;">Owner access only</h2>
+        <form id="login-form" novalidate>
+          <div class="field">
+            <label for="adm-email">Email</label>
+            <input type="email" id="adm-email" autocomplete="username" required>
+          </div>
+          <div class="field">
+            <label for="adm-pass">Password</label>
+            <input type="password" id="adm-pass" autocomplete="current-password" required>
+          </div>
+          <button type="submit" class="btn" style="width:100%;">Sign In</button>
+          <div class="form-status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ------------------------------ signed in, not an admin -->
+    <div id="denied-view" style="display:none; max-width:460px; margin-inline:auto;">
+      <div class="form-card" style="text-align:center;">
+        <h2 style="font-size:1.5rem; margin-bottom:.8rem;">Not authorized</h2>
+        <p style="color:var(--slate);">You're signed in as <strong id="denied-who"></strong>,
+        but that email isn't on the admin list.</p>
+        <button class="btn btn--ghost2" data-signout style="margin-top:1.4rem;">Sign Out</button>
+      </div>
+    </div>
+
+    <!-- ------------------------------ console -->
+    <div id="admin-view" style="display:none;">
+      <div class="adm-bar">
+        <p>Signed in as <strong id="admin-who"></strong></p>
+        <button class="btn btn--sm btn--ghost2" data-signout>Sign Out</button>
+      </div>
+
+      <div class="adm-grid">
+        <div class="adm-panel">
+          <p class="eyebrow">Moderation</p>
+          <h2>Reviews</h2>
+          <div class="adm-rows" id="adm-reviews"></div>
+        </div>
+
+        <div class="adm-panel">
+          <p class="eyebrow">Before &amp; After</p>
+          <h2>Gallery</h2>
+
+          <form id="gallery-form" novalidate>
+            <div class="field">
+              <label for="gal-title">Project title</label>
+              <input type="text" id="gal-title" maxlength="120" placeholder="e.g. Kitchen faucet replacement" required>
+            </div>
+            <div class="field">
+              <label for="gal-desc">Short description</label>
+              <input type="text" id="gal-desc" maxlength="600" placeholder="Optional — one line about the job">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="gal-before">Before photo</label>
+                <input type="file" id="gal-before" accept="image/jpeg,image/png,image/webp" required>
+              </div>
+              <div class="field">
+                <label for="gal-after">After photo</label>
+                <input type="file" id="gal-after" accept="image/jpeg,image/png,image/webp" required>
+              </div>
+            </div>
+            <button type="submit" class="btn" style="width:100%;">Post Project</button>
+            <div class="form-status" role="status" aria-live="polite"></div>
+          </form>
+
+          <div class="adm-rows" id="adm-gallery" style="margin-top:1.6rem;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<div class="stripe"></div>
+
+<footer class="site-footer">
+  <div class="shell footer__bar">
+    <span class="slogan">Small Jobs. Big Difference. <em>We're Here to Help.</em></span>
+    <span>&copy; <span data-year>2026</span> Y.S. Handymen LLC</span>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/db.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

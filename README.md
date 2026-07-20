@@ -12,8 +12,11 @@ Silberstein, servicing Cleveland.
 
 ## Stack
 
-Plain HTML, CSS and vanilla JS. No build step, no framework, no dependencies —
-drop the folder on any static host and it works. Deployed on Cloudflare Pages.
+Plain HTML, CSS and vanilla JS. No build step, no framework — deployed on
+Cloudflare Pages. Dynamic content (reviews, before/after gallery, owner console)
+runs on Supabase (Postgres + Auth + Storage) called directly from the browser
+via `@supabase/supabase-js` off the CDN; row-level security does all the
+gatekeeping, so no server is involved anywhere.
 
 ## Structure
 
@@ -23,11 +26,19 @@ drop the folder on any static host and it works. Deployed on Cloudflare Pages.
 ├── services.html       Full service catalogue + FAQ
 ├── about.html          Who runs it, working principles, guarantee, service area
 ├── contact.html        Contact details + quote request form
+├── gallery.html        Before/after project photos, loaded from Supabase
+├── reviews.html        Approved customer reviews + public submission form
+├── admin.html          Owner console — Supabase Auth login, moderation, uploads (noindex)
 ├── sitemap.xml         Generated — update if pages are added
 ├── robots.txt
 ├── CLIENT-web3forms-setup.txt   Plain-English setup note to send the owner
+├── supabase/schema.sql Tables, RLS policies, storage bucket — run in the SQL editor
 ├── css/styles.css      Single stylesheet (design tokens at the top)
 ├── js/main.js          Nav drawer, scroll reveals, sticky header, form handling
+├── js/db.js            Supabase client init + tiny shared helpers
+├── js/reviews.js       Reviews page: list approved, submit new (arrive unapproved)
+├── js/gallery.js       Gallery page: render before/after cards from the DB
+├── js/admin.js         Owner console: auth, review moderation, gallery uploads
 └── assets/
     ├── logo.png                Full logo, dark — for light backgrounds
     ├── logo-white.png          Knockout full logo — for navy backgrounds
@@ -120,6 +131,33 @@ project):
    account, so Cloudflare creates the DNS records automatically.
 2. Delete the old `yshandyman` Pages project in the previous (Shalomkarr) account —
    it is Git-connected to this repo and will otherwise keep deploying in parallel.
+
+## Reviews, gallery & owner console (Supabase)
+
+Project: `ahpdemhyqxcdgxqeyzot.supabase.co`. The anon key in `js/db.js` is a
+public client token — every read and write is gated by row-level security,
+defined in `supabase/schema.sql` (idempotent; paste into the SQL editor to
+set up or repair).
+
+**Data model**
+
+- `reviews` — anyone can insert (forced `approved = false`); the public can
+  only read approved rows; admins read/update/delete everything.
+- `gallery` — public read; admin-only writes. Images live in the public
+  `gallery` storage bucket (10 MB cap, jpeg/png/webp only, admin-only writes).
+- `admins` — emails with moderation rights (seeded with the owner). The
+  `is_admin()` security-definer function is the single source of truth for
+  every policy and for the console's UI routing (`rpc('is_admin')`).
+
+**Owner console** (`admin.html`, linked as "Owner Login" in the footer,
+noindexed): email/password sign-in via Supabase Auth. Being signed in grants
+nothing — the email must also be in `admins`. From there the owner approves,
+edits, unpublishes or deletes reviews, and posts/deletes before-and-after
+projects (two photos upload to storage, then a `gallery` row is inserted).
+
+**One-time setup**: run `supabase/schema.sql`, then create the login under
+Authentication → Users → Add user (owner's email + password, Auto Confirm).
+To add another moderator: add the email to `admins` and create a login for it.
 
 ## Contact form
 
