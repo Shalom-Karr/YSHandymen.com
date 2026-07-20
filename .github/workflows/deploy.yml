@@ -26,6 +26,10 @@ jobs:
           mkdir dist
           cp index.html about.html services.html contact.html gallery.html reviews.html admin.html robots.txt sitemap.xml dist/
           cp -r css js assets dist/
+          # Cache-bust local CSS/JS so browsers pick up new styles the moment a
+          # deploy lands instead of serving stale cached assets for hours.
+          V=${GITHUB_SHA::8}
+          sed -i -E "s|(href=\"css/styles\.css)\"|\1?v=$V\"|g; s|(src=\"js/[a-z]+\.js)\"|\1?v=$V\"|g" dist/*.html
 
       - name: Create Pages project if missing
         run: npx wrangler@4 pages project create yshandymen --production-branch=main || true

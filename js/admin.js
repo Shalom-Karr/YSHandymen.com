@@ -83,7 +83,7 @@
         '<span class="badge ' + (r.approved ? 'badge--live' : 'badge--pending') + '">' +
         (r.approved ? 'Live' : 'Pending') + '</span>' +
         '</div>' +
-        '<blockquote data-body>' + sbu.esc(r.body) + '</blockquote>' +
+        '<blockquote>' + sbu.esc(r.body) + '</blockquote>' +
         '<p class="adm-meta"><strong>' + sbu.esc(r.name) + '</strong>' +
         (r.location ? ' · ' + sbu.esc(r.location) : '') + ' · ' + sbu.when(r.created_at) + '</p>' +
         '<div class="btn-row adm-actions">' +
@@ -108,27 +108,47 @@
       });
 
       el.querySelector('[data-edit]').addEventListener('click', function () {
-        var q = el.querySelector('[data-body]');
-        if (el.querySelector('textarea')) return;
-        var ta = document.createElement('textarea');
-        ta.value = r.body;
-        ta.rows = 4;
-        q.replaceWith(ta);
-        var save = document.createElement('button');
-        save.className = 'btn btn--sm';
-        save.textContent = 'Save';
-        var cancel = document.createElement('button');
-        cancel.className = 'btn btn--sm btn--ghost2';
-        cancel.textContent = 'Cancel';
-        var actions = el.querySelector('.adm-actions');
-        actions.style.display = 'none';
-        actions.after(save, cancel);
-        cancel.addEventListener('click', loadReviews);
-        save.addEventListener('click', function () {
-          var body = ta.value.trim();
-          if (body.length < 10) return;
-          sb.from('reviews').update({ body: body }).eq('id', r.id)
-            .then(function (res) { if (!res.error) loadReviews(); });
+        if (el.querySelector('.adm-edit')) return;
+        var wrap = document.createElement('div');
+        wrap.className = 'adm-edit';
+        wrap.innerHTML =
+          '<label>Name<input type="text" data-f-name maxlength="80"></label>' +
+          '<label>Neighborhood<input type="text" data-f-location maxlength="80" placeholder="Optional"></label>' +
+          '<label>Rating<select data-f-rating>' +
+            [5, 4, 3, 2, 1].map(function (n) {
+              return '<option value="' + n + '">' + n + ' star' + (n > 1 ? 's' : '') + '</option>';
+            }).join('') +
+          '</select></label>' +
+          '<label>Review<textarea data-f-body rows="4" maxlength="1200"></textarea></label>' +
+          '<div class="btn-row">' +
+          '<button class="btn btn--sm" data-save>Save</button>' +
+          '<button class="btn btn--sm btn--ghost2" data-cancel>Cancel</button>' +
+          '</div><p class="adm-note" data-err></p>';
+        wrap.querySelector('[data-f-name]').value = r.name;
+        wrap.querySelector('[data-f-location]').value = r.location || '';
+        wrap.querySelector('[data-f-rating]').value = String(r.rating);
+        wrap.querySelector('[data-f-body]').value = r.body;
+
+        el.querySelector('.adm-actions').style.display = 'none';
+        el.appendChild(wrap);
+
+        wrap.querySelector('[data-cancel]').addEventListener('click', loadReviews);
+        wrap.querySelector('[data-save]').addEventListener('click', function () {
+          var v = {
+            name: wrap.querySelector('[data-f-name]').value.trim(),
+            location: wrap.querySelector('[data-f-location]').value.trim() || null,
+            rating: parseInt(wrap.querySelector('[data-f-rating]').value, 10),
+            body: wrap.querySelector('[data-f-body]').value.trim()
+          };
+          if (v.name.length < 2 || v.body.length < 10) {
+            wrap.querySelector('[data-err]').textContent =
+              'Name needs at least 2 characters and the review at least 10.';
+            return;
+          }
+          sb.from('reviews').update(v).eq('id', r.id).then(function (res) {
+            if (res.error) { wrap.querySelector('[data-err]').textContent = 'Save failed: ' + res.error.message; return; }
+            loadReviews();
+          });
         });
       });
     });
@@ -155,6 +175,11 @@
       });
   }
 
+  function ext(file) {
+    var m = /\.(jpe?g|png|webp)$/i.exec(file.name);
+    return m ? m[0].toLowerCase() : '.jpg';
+  }
+
   function renderGallery(rows) {
     if (!rows.length) { galList.innerHTML = '<p class="adm-note">No projects posted yet.</p>'; return; }
     galList.innerHTML = rows.map(function (g) {
@@ -166,24 +191,86 @@
         '<p class="adm-meta"><strong>' + sbu.esc(g.title) + '</strong>' +
         (g.description ? ' — ' + sbu.esc(g.description) : '') + '</p>' +
         '<div class="btn-row adm-actions">' +
+        '<button class="btn btn--sm btn--ghost2" data-edit>Edit</button>' +
         '<button class="btn btn--sm btn--danger" data-delete>Delete</button>' +
         '</div></div>';
     }).join('');
 
     rows.forEach(function (g) {
-      galList.querySelector('[data-id="' + g.id + '"] [data-delete]')
-        .addEventListener('click', function () {
-          if (!confirm('Delete this project and its photos?')) return;
-          sb.storage.from('gallery').remove([g.before_path, g.after_path])
-            .then(function () { return sb.from('gallery').delete().eq('id', g.id); })
-            .then(function (res) { if (!res.error) loadGallery(); });
-        });
-    });
-  }
+      var el = galList.querySelector('[data-id="' + g.id + '"]');
 
-  function ext(file) {
-    var m = /\.(jpe?g|png|webp)$/i.exec(file.name);
-    return m ? m[0].toLowerCase() : '.jpg';
+      el.querySelector('[data-delete]').addEventListener('click', function () {
+        if (!confirm('Delete this project and its photos?')) return;
+        sb.storage.from('gallery').remove([g.before_path, g.after_path])
+          .then(function () { return sb.from('gallery').delete().eq('id', g.id); })
+          .then(function (res) { if (!res.error) loadGallery(); });
+      });
+
+      el.querySelector('[data-edit]').addEventListener('click', function () {
+        if (el.querySelector('.adm-edit')) return;
+        var wrap = document.createElement('div');
+        wrap.className = 'adm-edit';
+        wrap.innerHTML =
+          '<label>Title<input type="text" data-f-title maxlength="120"></label>' +
+          '<label>Description<input type="text" data-f-desc maxlength="600" placeholder="Optional"></label>' +
+          '<label>Replace before photo<input type="file" data-f-before accept="image/jpeg,image/png,image/webp"></label>' +
+          '<label>Replace after photo<input type="file" data-f-after accept="image/jpeg,image/png,image/webp"></label>' +
+          '<p class="adm-note">Leave a photo empty to keep the current one.</p>' +
+          '<div class="btn-row">' +
+          '<button class="btn btn--sm" data-save>Save</button>' +
+          '<button class="btn btn--sm btn--ghost2" data-cancel>Cancel</button>' +
+          '</div><p class="adm-note" data-err></p>';
+        wrap.querySelector('[data-f-title]').value = g.title;
+        wrap.querySelector('[data-f-desc]').value = g.description || '';
+
+        el.querySelector('.adm-actions').style.display = 'none';
+        el.appendChild(wrap);
+
+        wrap.querySelector('[data-cancel]').addEventListener('click', loadGallery);
+        wrap.querySelector('[data-save]').addEventListener('click', function () {
+          var title = wrap.querySelector('[data-f-title]').value.trim();
+          var desc = wrap.querySelector('[data-f-desc]').value.trim() || null;
+          var newBefore = wrap.querySelector('[data-f-before]').files[0] || null;
+          var newAfter = wrap.querySelector('[data-f-after]').files[0] || null;
+          var err = wrap.querySelector('[data-err]');
+          if (title.length < 2) { err.textContent = 'A title is required.'; return; }
+
+          var saveBtn = wrap.querySelector('[data-save]');
+          saveBtn.disabled = true;
+          err.textContent = (newBefore || newAfter) ? 'Uploading…' : '';
+
+          var stamp = Date.now();
+          var patch = { title: title, description: desc };
+          var uploaded = [];
+          var replaced = [];
+
+          function uploadIf(file, label, oldPath) {
+            if (!file) return Promise.resolve();
+            var path = stamp + '-' + label + ext(file);
+            return sb.storage.from('gallery').upload(path, file).then(function (r) {
+              if (r.error) throw r.error;
+              uploaded.push(path);
+              replaced.push(oldPath);
+              patch[label + '_path'] = path;
+            });
+          }
+
+          uploadIf(newBefore, 'before', g.before_path)
+            .then(function () { return uploadIf(newAfter, 'after', g.after_path); })
+            .then(function () { return sb.from('gallery').update(patch).eq('id', g.id); })
+            .then(function (res) {
+              if (res.error) throw res.error;
+              if (replaced.length) sb.storage.from('gallery').remove(replaced);
+              loadGallery();
+            })
+            .catch(function (e2) {
+              saveBtn.disabled = false;
+              err.textContent = 'Save failed: ' + (e2.message || e2);
+              if (uploaded.length) sb.storage.from('gallery').remove(uploaded);
+            });
+        });
+      });
+    });
   }
 
   galForm.addEventListener('submit', function (e) {
