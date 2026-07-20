@@ -214,16 +214,3 @@ Targeted at local searches like "handyman Cleveland" / "handyman near me".
   - `FAQPage` on services.html — the seven questions in the markup match the seven
     visible on the page, which Google requires
   - `BreadcrumbList` on all subpages, plus `WebSite` / `AboutPage` / `ContactPage`
-
-## Things the owner should confirm or supply
-
-- **Exact business hours.** Currently "Sunday–Friday, daytime hours" with
-  "Closed Shabbos & Yom Tov". Schema declares 08:00–17:00 Sun–Fri. Update in the top
-  bar of all pages, in `contact.html`, and in the JSON-LD.
-- **Licensing / insurance.** No claims made. If licensed or insured, say so — it converts.
-- **`AggregateRating` schema.** Once a handful of genuine reviews are approved, the
-  average rating can be added to the JSON-LD for star snippets in search results.
-
-Resolved: the city is confirmed as **Cleveland, Ohio** (the 848 number is a kept
-New Jersey cell), and customer reviews are now collected live on `reviews.html`
-with owner moderation.
