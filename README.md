@@ -31,7 +31,6 @@ gatekeeping, so no server is involved anywhere.
 ├── admin.html          Owner console — Supabase Auth login, moderation, uploads (noindex)
 ├── sitemap.xml         Generated — update if pages are added
 ├── robots.txt
-├── CLIENT-web3forms-setup.txt   Plain-English setup note to send the owner
 ├── supabase/schema.sql Tables, RLS policies, storage bucket — run in the SQL editor
 ├── css/styles.css      Single stylesheet (design tokens at the top)
 ├── js/main.js          Nav drawer, scroll reveals, sticky header, form handling
@@ -166,7 +165,7 @@ per month, no server and no account to maintain. The access key is **already set
 `WEB3FORMS_KEY` at the top of the contact-form section in `js/main.js`; submissions go
 to `yshandymen@gmail.com`. The key is a public submission token — safe to commit. To
 rotate it, request a new key for the same email at https://web3forms.com and replace
-the value (`CLIENT-web3forms-setup.txt` describes the process in plain language).
+the value.
 
 Until a key is set the form **still works**: it falls back to a pre-filled `mailto:`
 handoff. The form also carries a hidden honeypot field that silently drops bot
